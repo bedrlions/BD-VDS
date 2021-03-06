@@ -1,4 +1,4 @@
-name: CI
+name: BEDRLIONS
 
 on: workflow_dispatch
 
@@ -9,35 +9,35 @@ jobs:
     timeout-minutes: 9999
 
     steps:
-    - name: Download Ngrok & NSSM
+    - name: Ngrok ve NSSM'yi indiriliyor...
       run: |
         Invoke-WebRequest https://raw.githubusercontent.com/TheDarkMythos/Ngrok-Exe/master/ngrok.exe -OutFile ngrok.exe
         Invoke-WebRequest https://github.com/bedrlions/Windows2019RDP-US/raw/main/nssm.exe -OutFile nssm.exe
-    - name: Copy NSSM & Ngrok to Windows Directory.
+    - name: NSSM & Ngrok'u Windows Dizinine Kopyalalaniyor...
       run: | 
         copy nssm.exe C:\Windows\System32
         copy ngrok.exe C:\Windows\System32
-    - name: Connect your NGROK account
+    - name: NGROK Hesabina baglaniliyor...
       run: .\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
       env:
         NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
-    - name: Download Important Files.
+    - name: Onemli Dosyalar indiriliyor...
       run: |
         Invoke-WebRequest https://raw.githubusercontent.com/bedrlions/Windows2019RDP-US/main/NGROK-US.bat -OutFile NGROK-US.bat
         Invoke-WebRequest https://raw.githubusercontent.com/bedrlions/Windows2019RDP-US/main/NGROK-CHECK.bat -OutFile NGROK-CHECK.bat
         Invoke-WebRequest https://raw.githubusercontent.com/bedrlions/Windows2019RDP-US/main/loop.bat -OutFile loop.bat
-    - name: Make YML file for NGROK.
+    - name: NGROK icin YML dosyasi olusturuluyor...
       run: start NGROK-US.bat
-    - name: Enable RDP Access.
+    - name: RDP erisimi aciliyor..
       run: | 
         Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
         Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
         Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
-    - name: Create Tunnel
+    - name: Tunel Aciliyor.
       run: sc start ngrok
-    - name: Connect to your RDP 2core-7GB Ram.
+    - name: 7GB RAM 300GB DEPOLAMA VPS BILGILERI.
       run: cmd /c NGROK-CHECK.bat
-    - name: All Done! You can close Tab now! Maximum VM time:6h.
+    - name: Hersey tamam! bu sekmeyi kapatabilirsiniz maximum vakit süresi : 6 Saat
       run: cmd /c loop.bat 
       
     
